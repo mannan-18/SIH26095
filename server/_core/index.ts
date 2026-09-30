@@ -5,6 +5,8 @@ import net from "net";
 import multer from "multer";
 import { createHash } from "node:crypto";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { appRouter, actorRole } from "../routers";
@@ -47,17 +49,44 @@ async function startServer() {
   await seedDemoAccounts();
   const app = express();
   const server = createServer(app);
-  const rateBuckets = new Map<string, { count: number; resetAt: number }>();
-  const rateLimit = (limit: number, windowMs: number) => (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const key = `${req.ip}:${req.path}`;
-    const now = Date.now();
-    const current = rateBuckets.get(key);
-    const bucket = !current || current.resetAt <= now ? { count: 0, resetAt: now + windowMs } : current;
-    bucket.count += 1;
-    rateBuckets.set(key, bucket);
-    if (bucket.count > limit) return res.status(429).setHeader("Retry-After", Math.ceil((bucket.resetAt - now) / 1000)).json({ error: "Rate limit exceeded" });
-    return next();
-  };
+
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://meet.jit.si", "https://*.jit.si"],
+          styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+          fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+          imgSrc: ["'self'", "data:", "blob:", "https://*"],
+          mediaSrc: ["'self'", "blob:", "https://*.mux.dev", "https://*"],
+          frameSrc: ["'self'", "https://meet.jit.si", "https://*.jit.si"],
+          connectSrc: ["'self'", "wss:", "https:", "http:"],
+        },
+      },
+      crossOriginEmbedderPolicy: false,
+    })
+  );
+
+  const globalApiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many requests, please try again later." },
+  });
+
+  const authLoginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: "Too many authentication attempts. Please try again after 15 minutes." },
+  });
+
+  app.use("/api/", globalApiLimiter);
+  app.use("/api/dosje-login", authLoginLimiter);
+  app.use("/api/auth/login", authLoginLimiter);
   // Enable CORS for local file:// and browser origins
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -120,7 +149,7 @@ async function startServer() {
   });
 
   // REST Authentication endpoint for dosje-login.html
-  app.post("/api/auth/login", rateLimit(30, 60_000), async (req, res) => {
+  app.post("/api/auth/login", authLoginLimiter, async (req, res) => {
     try {
       const { role, identifier, employeeId, email: userEmail, password, rememberMe } = req.body ?? {};
       const id = identifier || employeeId || userEmail;
@@ -283,7 +312,7 @@ async function startServer() {
   // tRPC API
   app.use(
     "/api/trpc",
-    rateLimit(120, 60_000),
+    rateLimit({ windowMs: 60_000, max: 120 }),
     createExpressMiddleware({
       router: appRouter,
       createContext,
