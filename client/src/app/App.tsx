@@ -1,12 +1,14 @@
+import { lazy, Suspense } from "react";
 import { Route, Switch, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useAuth } from "@/hooks/useAuth";
-import Login from "@/pages/Login";
-import Home from "@/pages/Home";
-import NotFound from "@/pages/NotFound";
+
+const Login = lazy(() => import("@/pages/Login"));
+const Home = lazy(() => import("@/pages/Home"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, loading } = useAuth();
@@ -35,7 +37,17 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster position="top-right" />
-          <Switch>
+          <Suspense
+            fallback={
+              <div className="flex min-h-screen items-center justify-center bg-[#EEE9DF]">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#FFB162] border-t-transparent" />
+                  <span className="text-xs text-[#2C3B4D] font-mono font-bold tracking-wider">LOADING SECURESIGHT GRID...</span>
+                </div>
+              </div>
+            }
+          >
+            <Switch>
             {/* Public authentication routes */}
             <Route path="/login" component={Login} />
             <Route path="/dosje-login" component={Login} />
@@ -66,7 +78,8 @@ function App() {
               <ProtectedRoute component={Home} />
             </Route>
           </Switch>
-        </TooltipProvider>
+        </Suspense>
+      </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
