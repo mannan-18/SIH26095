@@ -65,3 +65,50 @@ Evidence uploads validate MIME type and size, calculate SHA-256 on the server, u
 The current MVP is suitable for judging and controlled pilot design. Production hardening still includes dedicated normalized MySQL domain tables, field-level institute ownership checks backed by persistent memberships, encrypted offline evidence, background retry scheduling, malware scanning, rate limiting, backup automation, and operational monitoring.
 
 See `MVP_COMPLETION_REPORT.md` for the evidence-based completion status and `CLOUD_TEST_HANDOFF_REPORT.md` for the HMR test handoff.
+
+## Project Structure
+
+```
+client/
+  public/                     # Manifest, service worker, icons
+  src/
+    app/                      # App.tsx, main.tsx, routing & root guards
+    pages/                    # Home, Login, NotFound (+ Login.css)
+    components/
+      dashboards/             # Role dashboards (Admin, Inspector, NGO, State, User)
+      capture/  cctv/  vc/  common/  ui/
+    lib/                      # tRPC client, offline queue, utilities
+    hooks/                    # Custom hooks (useAuth, useMobile)
+    styles/                   # index.css and design tokens
+server/
+  _core/                      # Express setup, OAuth, Vite dev middleware
+  config/                     # Auth & environment config (authConfig)
+  db/                         # MySQL connection & persistence adapters (db.ts)
+  domain/                     # Business logic (demoStore, secureEngine, providers, storage)
+  routers/                    # tRPC routers (routers.ts, index.ts)
+  __tests__/                  # Unit and integration test suites
+shared/                       # Shared constants and TypeScript definitions
+drizzle/                      # Database schema & migrations (UNTOUCHED)
+patches/                      # Third-party patches (UNTOUCHED)
+docs/
+  architecture/               # Architecture diagram, tree maps, layer rules
+  reports/                    # Audit & UI/UX reports
+  demo/                       # Demo guide scripts
+  screenshots/                # UI/UX screenshot evidence
+```
+
+### Commands to Run, Test and Build
+```bash
+# Type-check TypeScript codebase
+npx tsc --noEmit
+
+# Run unit and integration tests
+npx vitest run
+
+# Build production bundle (client + server)
+npm run build
+
+# Start local development server
+npm run dev
+```
+

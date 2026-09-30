@@ -1,37 +1,71 @@
-# SecureSight architecture
+# Securesight Architecture & Layer Boundaries
 
-SecureSight is a modular monolith built for a focused monitoring and inspection workflow. The client is a React 19 application served by Vite in development and by the Express process in production. The server exposes typed tRPC procedures and a small authenticated multipart route for evidence ingestion.
+## Overview
+Securesight (DoSJE Nigrani 2.0 Grid) is structured into distinct, strict layers. Communication flows top-down from the React client through tRPC procedure routers into domain services, ending at the persistence layer (MySQL / in-memory fallback).
 
-## Runtime layers
+```mermaid
+graph TD
+  subgraph Client ["Client Layer (client/src)"]
+    App["app/ (Routing & Root)"]
+    Pages["pages/ (Home, Login, NotFound)"]
+    Components["components/ (dashboards, capture, cctv, vc, common, ui)"]
+    LibClient["lib/ (tRPC Client, Offline Queue)"]
+    Hooks["hooks/ (useAuth, useMobile)"]
+    Styles["styles/ (index.css)"]
+  end
 
-| Layer | Technology | Responsibility |
-|---|---|---|
-| Browser client | React 19, TypeScript, Tailwind CSS | Command Centre, map, inspections, evidence, alerts, and audit views |
-| API contract | tRPC 11 | Typed query and mutation procedures under `/api/trpc` |
-| HTTP runtime | Express 4 and Node.js | OAuth callbacks, multipart evidence route, static assets, and tRPC adapter |
-| Persistence | Drizzle ORM and managed MySQL | Auth users and restart-safe domain record envelope |
-| Object storage | Built-in S3-compatible storage | Evidence bytes through presigned PUT/GET flows |
-| Authentication | Manus OAuth | Session cookie and authenticated request context |
-| Offline foundation | IndexedDB and service worker | Local inspection outbox and cached application shell |
+  subgraph Shared ["Shared Layer (shared/)"]
+    Const["const.ts (Roles, Constants)"]
+    Types["types.ts & errors.ts"]
+  end
 
-## Domain persistence
+  subgraph Server ["Server Layer (server/)"]
+    Core["_core/ (Express, HTTP Server, Auth, SDK)"]
+    Config["config/ (authConfig)"]
+    Routers["routers/ (tRPC Procedures & AppRouter)"]
+    Domain["domain/ (demoStore, secureEngine, providers, storage)"]
+    DB["db/ (MySQL Connection & Adapters)"]
+    Realtime["realtime/ (SSE Event Bus)"]
+  end
 
-The MVP uses the Drizzle-managed MySQL `domain_records` table. Each row contains a stable entity, record identifier, and JSON payload. Startup hydration loads records into the existing typed domain service. Mutating workflow procedures enqueue a transactional bulk upsert before returning to the caller.
+  subgraph Database ["Database Layer (drizzle/)"]
+    Schema["schema.ts (Drizzle Entities)"]
+    Migrations["migrations/"]
+  end
 
-This design is an intentional MVP persistence envelope. It removes critical state from process memory while preserving the current domain contracts. A later production iteration can normalize each entity into dedicated MySQL tables without changing the external tRPC contract.
+  App --> Pages
+  Pages --> Components
+  Pages --> LibClient
+  Components --> LibClient
+  LibClient -->|"HTTP / tRPC JSON"| Routers
+  Routers --> Core
+  Routers --> Domain
+  Domain --> DB
+  DB --> Schema
+  Core --> Config
+  Domain --> Shared
+  Routers --> Shared
+  LibClient --> Shared
+```
 
-## Security boundaries
+---
 
-The server selects inspectors, seals assignments, computes evidence hashes, evaluates geofence distance, updates audit hashes, and authorizes role-specific procedures. The browser never chooses an inspector or supplies a trusted evidence hash.
+## Directory Responsibilities & Boundary Guidelines
 
-Geofencing uses one application-level Haversine implementation in `server/secureEngine.ts`. The calculation returns a 100-meter signal and does not independently assert fraud when location is unavailable.
-
-Evidence bytes are sent to the built-in S3-compatible storage provider. Metadata remains under server control. Download requests require authentication and an allowed operational role before the server returns a signed object URL.
-
-## Provider boundaries
-
-CCTV and video-conference integrations use explicit provider interfaces. The current provider implementations are deterministic demo providers. They return honest unavailable, invalid, offline, or demo statuses instead of pretending to be live external integrations.
-
-## Production evolution
-
-The next hardening steps are normalized MySQL repositories, persisted organization memberships, encrypted offline evidence, background sync, malware scanning, rate limits, structured monitoring, and backup automation. This project does not claim FastAPI, SQLAlchemy, PostgreSQL, PostGIS, or Alembic infrastructure.
+| Directory | What Belongs Here | What MUST NOT Go Here |
+| :--- | :--- | :--- |
+| `client/src/app/` | Root mount, router definitions, protected route wrappers | Business logic, direct DB queries, inline UI components |
+| `client/src/pages/` | Top-level view routes (Home, Login, NotFound) | Shared primitive UI components, server code |
+| `client/src/components/` | Modular UI components grouped by feature (`dashboards/`, `capture/`, `cctv/`, `vc/`, `common/`, `ui/`) | Direct database operations, server endpoints |
+| `client/src/lib/` | tRPC client setup, offline queue manager, client utilities | React visual JSX components, server-only code |
+| `client/src/hooks/` | Reusable React hooks (`useAuth`, `useMobile`, `useComposition`) | Direct DOM manipulation, backend business logic |
+| `client/src/styles/` | Global CSS stylesheets, design tokens, color palette rules | JavaScript code, component templates |
+| `server/_core/` | System infrastructure, Express setup, OAuth callbacks, Vite dev middleware | Feature-specific business rules, custom domain calculations |
+| `server/config/` | Environment variables parsing, server credentials config | Database queries, UI components |
+| `server/routers/` | tRPC procedure router definitions and permission guards | Raw SQL queries, React UI code |
+| `server/domain/` | Audit ledger, risk analysis engine, geofencing, simulation state store | HTTP response formatting, client JSX code |
+| `server/db/` | Database client connection, ORM persistence adapters | Express route handlers, UI components |
+| `server/realtime/` | Server-Sent Events (SSE) / event bus handlers | Heavy synchronous calculation logic |
+| `server/__tests__/` | All unit and integration test suites (*.test.ts) | Production runtime handlers |
+| `shared/` | Shared TypeScript types, error definitions, system constants | Node-only file system operations, DOM code |
+| `drizzle/` | Database schema definitions, SQL migration files | Application logic, runtime state |
