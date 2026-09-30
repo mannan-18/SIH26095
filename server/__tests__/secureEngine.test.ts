@@ -163,4 +163,11 @@ describe("SecureSight Core Security & Credibility Unit Tests (Phase 8)", () => {
     expect(risk.factors.length).toBeGreaterThan(3);
     expect(["HIGH", "CRITICAL"]).toContain(risk.riskLevel);
   });
+
+  it("refuses audit chain repair script in production when DEMO_MODE is false", async () => {
+    const { checkRepairAllowed, executeAuditRepair } = await import("../../scripts/repair-audit-chain");
+    const mockProdEnv = { NODE_ENV: "production", DEMO_MODE: "false" };
+    expect(checkRepairAllowed(mockProdEnv)).toBe(false);
+    await expect(executeAuditRepair(mockProdEnv)).rejects.toThrow(/REFUSED/);
+  });
 });
