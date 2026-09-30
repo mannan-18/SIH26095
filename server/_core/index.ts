@@ -50,9 +50,10 @@ async function startServer() {
   const app = express();
   const server = createServer(app);
 
+  const isDev = process.env.NODE_ENV !== "production";
   app.use(
     helmet({
-      contentSecurityPolicy: {
+      contentSecurityPolicy: isDev ? false : {
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://meet.jit.si", "https://*.jit.si"],
@@ -68,25 +69,16 @@ async function startServer() {
     })
   );
 
-  const globalApiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 300,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: "Too many requests, please try again later." },
-  });
-
   const authLoginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 20,
+    max: 10,
     standardHeaders: true,
     legacyHeaders: false,
-    message: { error: "Too many authentication attempts. Please try again after 15 minutes." },
+    message: { error: "Too many login attempts. Please wait 15 minutes before trying again." },
   });
 
-  app.use("/api/", globalApiLimiter);
-  app.use("/api/dosje-login", authLoginLimiter);
   app.use("/api/auth/login", authLoginLimiter);
+  app.use("/api/dosje-login", authLoginLimiter);
   // Enable CORS for local file:// and browser origins
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -312,7 +304,6 @@ async function startServer() {
   // tRPC API
   app.use(
     "/api/trpc",
-    rateLimit({ windowMs: 60_000, max: 120 }),
     createExpressMiddleware({
       router: appRouter,
       createContext,

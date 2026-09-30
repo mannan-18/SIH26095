@@ -1,4 +1,4 @@
-const CACHE = "securesight-shell-v2";
+const CACHE = "securesight-shell-v3";
 const SHELL = ["/", "/index.html"];
 
 self.addEventListener("install", (event) => {
