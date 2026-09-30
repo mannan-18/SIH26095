@@ -1,5 +1,5 @@
 import type { Express } from "express";
-import { canAccessStorageKey, normalizeStorageKey } from "../storageAccess";
+import { canAccessStorageKey, normalizeStorageKey } from "../domain/storageAccess";
 import { ENV } from "./env";
 import { sdk } from "./sdk";
 

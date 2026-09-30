@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { storageGetSignedUrl, storagePut } from "../server/storage";
+import { storageGetSignedUrl, storagePut } from "../server/domain/storage";
 
 const payload = Buffer.from("securesight-phase2-storage-proof");
 const expectedHash = createHash("sha256").update(payload).digest("hex");

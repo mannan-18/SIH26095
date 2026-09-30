@@ -1,17 +1,17 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
-import { verifyServerRoleCredentials, SERVER_DEMO_CREDENTIALS } from "./authConfig";
+import { verifyServerRoleCredentials, SERVER_DEMO_CREDENTIALS } from "../config/authConfig";
 import { randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { sdk } from "./_core/sdk";
-import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
-import { alerts, assignments, auditLog, evidence, flushPersistence, generateAssignment, getAttendanceSummary, getAudit, getChecklistForInspection, getOverview, institutes, inspections, queuePersistence, reveal, runRiskAnalysis, seal, startSurpriseInspection, captureGps, submitInspection, updateAlertStatus, verifyEvidenceDemo, seedNewEvidence, requestEvidenceNonce, submitLiveCapture, activeVcSessions, triggerRandomVc, answerVcCall, declineVcCall, missVcCall, endVcCall, reportCctvFeedStatus, getRegionalOverview } from "./demoStore";
-import { verifyAuditChain } from "./secureEngine";
-import { MockCCTVProvider, MockVideoConferenceProvider } from "./providers";
-import type { User } from "../drizzle/schema";
-import { claimAssignment, createInvitedUser, getUserByOpenId, listUsers, updateUserAccess, upsertUser } from "./db";
+import { getSessionCookieOptions } from "../_core/cookies";
+import { sdk } from "../_core/sdk";
+import { systemRouter } from "../_core/systemRouter";
+import { publicProcedure, protectedProcedure, router } from "../_core/trpc";
+import { alerts, assignments, auditLog, evidence, flushPersistence, generateAssignment, getAttendanceSummary, getAudit, getChecklistForInspection, getOverview, institutes, inspections, queuePersistence, reveal, runRiskAnalysis, seal, startSurpriseInspection, captureGps, submitInspection, updateAlertStatus, verifyEvidenceDemo, seedNewEvidence, requestEvidenceNonce, submitLiveCapture, activeVcSessions, triggerRandomVc, answerVcCall, declineVcCall, missVcCall, endVcCall, reportCctvFeedStatus, getRegionalOverview } from "../domain/demoStore";
+import { verifyAuditChain } from "../domain/secureEngine";
+import { MockCCTVProvider, MockVideoConferenceProvider } from "../domain/providers";
+import type { User } from "../../drizzle/schema";
+import { claimAssignment, createInvitedUser, getUserByOpenId, listUsers, updateUserAccess, upsertUser } from "../db/db";
 
 export type ActorRole = "DEPARTMENT_ADMIN" | "PMU_INSPECTOR" | "INSTITUTE_ADMIN" | "STATE_AUTHORITY" | "AUDITOR";
 

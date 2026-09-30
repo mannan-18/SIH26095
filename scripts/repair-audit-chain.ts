@@ -1,5 +1,5 @@
-import { appendAudit, type AuditEvent, verifyAuditChain } from "../server/secureEngine";
-import { getAllDomainRecords, upsertDomainRecords } from "../server/db";
+import { appendAudit, type AuditEvent, verifyAuditChain } from "../server/domain/secureEngine";
+import { getAllDomainRecords, upsertDomainRecords } from "../server/db/db";
 
 const rows = await getAllDomainRecords();
 const events = rows.filter((row) => row.entity === "auditEvents").map((row) => row.payload as AuditEvent).sort((a, b) => Number(a.id.replace("AUD-", "")) - Number(b.id.replace("AUD-", "")));

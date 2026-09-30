@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
 import { appRouter } from "../routers";
-import { LocalDemoEvidenceStorage, MockCCTVProvider, MockVideoConferenceProvider } from "../providers";
+import { LocalDemoEvidenceStorage, MockCCTVProvider, MockVideoConferenceProvider } from "../domain/providers";
 import type { TrpcContext } from "../_core/context";
 
 function context(role: "admin" | "user" = "admin", email = "admin@securesight.gov.in", organizationId: string | null = null): TrpcContext {

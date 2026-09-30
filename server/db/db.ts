@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { DomainRecord, InsertUser, User, assignmentClaims, domainRecords, users } from "../drizzle/schema";
-import { ENV } from './_core/env';
+import { DomainRecord, InsertUser, User, assignmentClaims, domainRecords, users } from "../../drizzle/schema";
+import { ENV } from '../_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
 

@@ -1,5 +1,5 @@
 import { appendAudit, analyzeAttendance, geofenceStatus, evaluateServerGeofence, scoreRisk, securePick, sealAssignment, sha256, verifyAuditChain, verifyEvidence, revealAssignment, createEvidenceNonce, getNonceRecord } from "./secureEngine";
-import { getAllDomainRecords, replaceDomainRecords, upsertDomainRecords } from "./db";
+import { getAllDomainRecords, replaceDomainRecords, upsertDomainRecords } from "../db/db";
 
 export type Institute = {
   id: string;

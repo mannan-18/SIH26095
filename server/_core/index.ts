@@ -11,15 +11,15 @@ import { appRouter, actorRole } from "../routers";
 import { createContext } from "./context";
 import { sdk } from "./sdk";
 import { serveStatic, setupVite } from "./vite";
-import { alerts, auditLog, evidence, flushPersistence, hydrateDemoState, inspections, queuePersistence } from "../demoStore";
-import { appendAudit } from "../secureEngine";
-import { storagePut, storageGetSignedUrl } from "../storage";
-import { scopedStorageKey } from "../storageAccess";
+import { alerts, auditLog, evidence, flushPersistence, hydrateDemoState, inspections, queuePersistence } from "../domain/demoStore";
+import { appendAudit } from "../domain/secureEngine";
+import { storagePut, storageGetSignedUrl } from "../domain/storage";
+import { scopedStorageKey } from "../domain/storageAccess";
 import path from "node:path";
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
-import { verifyServerRoleCredentials, SERVER_DEMO_CREDENTIALS } from "../authConfig";
+import { verifyServerRoleCredentials, SERVER_DEMO_CREDENTIALS } from "../config/authConfig";
 import { getSessionCookieOptions } from "./cookies";
-import { getDb, getUserByOpenId, seedDemoAccounts, upsertUser } from "../db";
+import { getDb, getUserByOpenId, seedDemoAccounts, upsertUser } from "../db/db";
 import type { User } from "../../drizzle/schema";
 
 function isPortAvailable(port: number): Promise<boolean> {

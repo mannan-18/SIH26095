@@ -14,8 +14,8 @@ import {
   validateAssignmentConstraints,
   calculateInstituteRiskScore,
   analyzeAttendanceAdvanced,
-} from "../secureEngine";
-import { submitLiveCapture, requestEvidenceNonce, getRegionalOverview } from "../demoStore";
+} from "../domain/secureEngine";
+import { submitLiveCapture, requestEvidenceNonce, getRegionalOverview } from "../domain/demoStore";
 import { getUserStateScope } from "../routers";
 
 describe("SecureSight Core Security & Credibility Unit Tests (Phase 8)", () => {

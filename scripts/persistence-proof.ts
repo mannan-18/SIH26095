@@ -1,4 +1,4 @@
-import { auditLog, assignments, generateAssignment, getAudit, hydrateDemoState, inspections, queuePersistence, flushPersistence, startSurpriseInspection } from "../server/demoStore";
+import { auditLog, assignments, generateAssignment, getAudit, hydrateDemoState, inspections, queuePersistence, flushPersistence, startSurpriseInspection } from "../server/domain/demoStore";
 
 const mode = process.argv[2] ?? "write";
 if (mode === "write") {

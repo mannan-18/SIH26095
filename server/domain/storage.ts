@@ -3,7 +3,7 @@
 // served through the authenticated storage proxy.
 
 import crypto from "node:crypto";
-import { ENV } from "./_core/env";
+import { ENV } from "../_core/env";
 
 function getForgeConfig() {
   const forgeUrl = ENV.forgeApiUrl;
