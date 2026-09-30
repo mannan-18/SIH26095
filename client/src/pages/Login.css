@@ -1,0 +1,844 @@
+/* Official DoSJE GovTech Portal Theme — Nigrani 2.0 */
+:root {
+  --obsidian: #161610;
+  --bronze: #B58863;
+  --stone: #D3C3B9;
+  --navy: #152D3F;
+  --canvas: #FAF8F5;
+  --text-dark: #161610;
+  --text-muted: #3D4752;
+  --danger-red: #A35139;
+}
+
+.dosje-login-wrapper {
+  background-color: var(--stone);
+  color: var(--text-dark);
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}
+
+/* Background 3D Mesh Canvas */
+.login-mesh-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Main Auth Stage */
+.login-main-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0 24px;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Active Session Notice Banner */
+.active-session-banner {
+  width: 100%;
+  background: #FFFFFF;
+  border: 1.5px solid var(--bronze);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(181, 136, 99, 0.15);
+}
+
+.session-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.session-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+}
+
+.session-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--obsidian);
+  margin: 0;
+}
+
+.session-meta {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+}
+
+.session-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.session-resume-btn {
+  background: var(--navy);
+  color: #FFB162;
+  border: 1px solid var(--bronze);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 36px;
+}
+
+.session-resume-btn:hover {
+  background: var(--obsidian);
+}
+
+.session-switch-btn {
+  background: transparent;
+  border: 1px solid var(--stone);
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 36px;
+}
+
+.session-switch-btn:hover {
+  background: rgba(21, 45, 63, 0.05);
+}
+
+/* Glassmorphic Central Portal Card */
+.login-card-glass {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: rgba(253, 252, 249, 0.98);
+  border: 1.5px solid var(--bronze);
+  border-radius: 16px;
+  box-shadow: 
+    0 16px 40px -10px rgba(21, 45, 63, 0.15),
+    0 0 0 1px rgba(181, 136, 99, 0.3);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.login-form-content {
+  padding: 24px 20px;
+}
+
+@media (min-width: 480px) {
+  .login-form-content {
+    padding: 28px 24px;
+  }
+}
+
+/* Identity & Trust Header Block */
+.gov-card-header {
+  margin-bottom: 20px;
+}
+
+.gov-header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.gov-emblem-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FAF8F5;
+  border: 1.5px solid var(--bronze);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(21, 45, 63, 0.08);
+  flex-shrink: 0;
+}
+
+.gov-emblem-img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.lang-toggle-btn {
+  background: var(--navy);
+  color: #FAF8F5;
+  border: 1px solid var(--bronze);
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-toggle-btn:hover {
+  background: var(--obsidian);
+}
+
+.gov-title-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.gov-dept-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--navy);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.gov-ministry-sub {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin: 2px 0 0;
+  line-height: 1.3;
+}
+
+.gov-portal-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bronze);
+  text-transform: uppercase;
+  font-family: monospace;
+  margin: 3px 0 0;
+}
+
+.login-title-divider {
+  height: 1px;
+  background: var(--stone);
+  margin: 14px 0 16px;
+}
+
+.login-main-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--obsidian);
+  letter-spacing: -0.02em;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.login-sub-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 6px 0 0;
+  line-height: 1.45;
+}
+
+/* Accessible Role Selector Matrix */
+.role-selector-container {
+  margin-bottom: 20px;
+}
+
+.role-selector-heading {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+}
+
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media (min-width: 480px) {
+  .role-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.role-radio-card {
+  min-height: 56px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--stone);
+  background: #FAF8F5;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  transition: all 0.15s ease;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.role-radio-card:hover {
+  border-color: var(--bronze);
+  background: #FFFFFF;
+}
+
+.role-radio-card:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.role-radio-card.selected {
+  border: 2px solid var(--bronze);
+  background: rgba(21, 45, 63, 0.05);
+}
+
+.role-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.role-card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-circle-placeholder {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--stone);
+}
+
+.role-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.role-card-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--obsidian);
+  line-height: 1.25;
+}
+
+.role-radio-card.selected .role-card-title {
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.role-card-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  font-family: monospace;
+}
+
+.role-radio-card.selected .role-card-badge {
+  color: var(--danger-red);
+}
+
+/* Collapsible Demo Access Panel */
+.demo-credentials-disclosure {
+  border: 1.5px solid var(--bronze);
+  border-radius: 10px;
+  background: rgba(238, 233, 223, 0.6);
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-height: 44px;
+}
+
+.demo-credentials-summary {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--obsidian);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+  user-select: none;
+}
+
+.demo-credentials-summary::-webkit-details-marker {
+  display: none;
+}
+
+.demo-summary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.demo-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bronze);
+}
+
+.demo-badge-pill {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--obsidian);
+  background: #FFB162;
+  border: 1px solid var(--bronze);
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.demo-disclosure-content {
+  padding: 12px;
+  border-top: 1px solid var(--stone);
+  background: #FAF8F5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-cred-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.demo-cred-label {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.demo-cred-code {
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  background: rgba(21, 45, 63, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.demo-pass-flex {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-pass-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--navy);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-role-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 2px 0 4px;
+  line-height: 1.35;
+}
+
+.demo-autofill-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  background: var(--navy);
+  color: #FFB162;
+  border: 1px solid var(--bronze);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 38px;
+  transition: background 0.15s ease;
+}
+
+.demo-autofill-action-btn:hover {
+  background: var(--obsidian);
+}
+
+/* Error Alert Region */
+.login-error-alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: rgba(163, 81, 57, 0.1);
+  border: 1px solid rgba(163, 81, 57, 0.4);
+  color: var(--danger-red);
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+/* Form Layout */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.label-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--obsidian);
+}
+
+.capslock-warning {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--danger-red);
+}
+
+.input-field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.auth-input-control {
+  width: 100%;
+  height: 44px;
+  padding: 0 44px;
+  border: 1.5px solid var(--stone);
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: var(--obsidian);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  box-sizing: border-box;
+}
+
+.auth-input-control:focus {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(21, 45, 63, 0.15);
+}
+
+.input-left-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  color: var(--text-muted);
+}
+
+.input-eye-btn {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  border-radius: 6px;
+}
+
+.input-eye-btn:focus-visible {
+  outline: 2px solid var(--navy);
+}
+
+/* Session Options */
+.form-options-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.remember-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--obsidian);
+  cursor: pointer;
+  user-select: none;
+}
+
+.remember-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  accent-color: var(--navy);
+  cursor: pointer;
+}
+
+.remember-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0 0 0 24px;
+}
+
+/* Primary Submit Button */
+.auth-submit-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--navy);
+  color: #FFB162;
+  border: 1px solid var(--bronze);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(21, 45, 63, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-submit-btn:hover:not(:disabled) {
+  background: var(--obsidian);
+}
+
+.auth-submit-btn:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
+}
+
+.auth-submit-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-label-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submit-spinner-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Support Links Row */
+.support-links-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-size: 12px;
+}
+
+.support-link-btn {
+  background: transparent;
+  border: none;
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.support-link-btn:hover {
+  color: var(--obsidian);
+}
+
+.support-link-btn:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+/* Security Audit Footnote */
+.auth-security-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--stone);
+}
+
+.security-checks-list {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.sec-item {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gov-disclaimer-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Success View */
+.login-success-view {
+  padding: 40px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.success-icon-ring {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.success-heading {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--obsidian);
+  margin: 0;
+}
+
+.success-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.success-progress-bar {
+  width: 100%;
+  max-width: 240px;
+  height: 4px;
+  background: var(--stone);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.success-progress-fill {
+  height: 100%;
+  background: #10B981;
+  animation: fillProgress 0.75s ease-in-out forwards;
+}
+
+@keyframes fillProgress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Portal Footer */
+.gov-login-footer {
+  text-align: center;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  padding: 16px 0 8px;
+  z-index: 1;
+  position: relative;
+  line-height: 1.4;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 10.5px;
+  flex-wrap: wrap;
+}
+
+.button-press {
+  transition: transform 0.15s ease;
+}
+
+.button-press:active {
+  transform: scale(0.97);
+}

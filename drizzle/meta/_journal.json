@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1789145650927,
+      "tag": "0000_deep_hitman",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1789152492849,
+      "tag": "0001_romantic_dagger",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1789201535293,
+      "tag": "0002_free_titanium_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1789202394054,
+      "tag": "0003_married_virginia_dare",
+      "breakpoints": true
+    }
+  ]
+}

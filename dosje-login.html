@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>DoSJE Nigrani 2.0 — Secure Monitoring &amp; Inspection Grid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      /* Official DoSJE Color Palette */
+      --palladian: #EEE9DF;
+      --oatmeal: #C9C1B1;
+      --blue-fantastic: #2C3B4D;
+      --burning-flame: #FFB162;
+      --truffle-trouble: #A35139;
+      --abyssal-blue: #1B2632;
+
+      /* UI Tokens */
+      --bg: var(--palladian);
+      --card-bg: rgba(253, 252, 249, 0.92);
+      --card-border: var(--oatmeal);
+      --text-main: var(--abyssal-blue);
+      --text-muted: #5C6773;
+      --primary: var(--blue-fantastic);
+      --accent: var(--burning-flame);
+      --danger: var(--truffle-trouble);
+      --radius: 14px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Interactive 3D Ambient Canvas Background */
+    #meshCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    /* Government of India Official Top Bar */
+    .gov-strip {
+      width: 100%;
+      background: var(--abyssal-blue);
+      color: var(--palladian);
+      border-bottom: 2px solid var(--burning-flame);
+      padding: 6px 20px;
+      font-size: 11px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+
+    .gov-strip-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tricolor-tag {
+      display: inline-flex;
+      height: 12px;
+      border-radius: 2px;
+      overflow: hidden;
+      box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .tricolor-tag span {
+      width: 6px;
+      height: 100%;
+      display: block;
+    }
+
+    .tricolor-tag .saffron {
+      background: #FF9933;
+    }
+
+    .tricolor-tag .white {
+      background: #FFFFFF;
+    }
+
+    .tricolor-tag .green {
+      background: #138808;
+    }
+
+    .gov-strip-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #C9C1B1;
+      font-size: 10.5px;
+    }
+
+    .gov-strip-right span.live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--burning-flame);
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px #10B981;
+      display: inline-block;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+      }
+    }
+
+    /* Main Container Frame */
+    .main-wrap {
+      width: 100%;
+      max-width: 500px;
+      padding: 28px 18px;
+      position: relative;
+      z-index: 1;
+      margin: auto;
+    }
+
+    /* Official Ministry Header */
+    .ministry-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .emblem-wrapper {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid var(--oatmeal);
+      box-shadow: 0 4px 12px rgba(27, 38, 50, 0.08);
+      margin-bottom: 10px;
+    }
+
+    .emblem-wrapper svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--blue-fantastic);
+    }
+
+    .ministry-sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--blue-fantastic);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .ministry-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--abyssal-blue);
+      letter-spacing: -0.01em;
+      margin-top: 2px;
+    }
+
+    .ministry-badge {
+      display: inline-block;
+      margin-top: 6px;
+      background: rgba(44, 59, 77, 0.08);
+      border: 1px solid var(--oatmeal);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--blue-fantastic);
+    }
+
+    /* Active Session Alert Banner (if already logged in) */
+    .session-alert {
+      display: none;
+      background: #FFFFFF;
+      border: 1px solid var(--burning-flame);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(255, 177, 98, 0.15);
+    }
+
+    .session-alert-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .session-alert-text {
+      font-size: 11.5px;
+      color: var(--abyssal-blue);
+      line-height: 1.4;
+    }
+
+    .session-alert-btn {
+      background: var(--burning-flame);
+      color: var(--abyssal-blue);
+      border: none;
+      border-radius: 6px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all .15s;
+    }
+
+    .session-alert-btn:hover {
+      background: #FFA040;
+    }
+
+    /* Skeuomorphic Glassmorphism Card */
+    .portal-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 26px 24px 22px;
+      backdrop-filter: blur(12px);
+      box-shadow:
+        0 20px 40px -15px rgba(27, 38, 50, 0.12),
+        0 1px 3px rgba(27, 38, 50, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .card-heading {
+      margin-bottom: 18px;
+    }
+
+    .card-heading h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--abyssal-blue);
+    }
+
+    .card-heading p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Role Selection Grid */
+    .role-section-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--blue-fantastic);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .roles-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-bottom: 18px;
+    }
+
+    .role-btn {
+      background: #FFFFFF;
+      border: 1.5px solid var(--oatmeal);
+      border-radius: 10px;
+      padding: 10px 10px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--blue-fantastic);
+      font-family: 'Inter', sans-serif;
+      transition: all .15s ease;
+      box-shadow: 0 1px 3px rgba(27, 38, 50, 0.04);
+      position: relative;
+    }
+
+    .role-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: var(--blue-fantastic);
+      flex-shrink: 0;
+      transition: stroke .15s ease;
+    }
+
+    .role-btn-text {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.25;
+      display: block;
+    }
+
+    .role-btn:hover {
+      border-color: var(--blue-fantastic);
+      background: #F8F6F1;
+      transform: translateY(-1px);
+    }
+
+    .role-btn[aria-pressed="true"] {
+      background: #2C3B4D;
+      color: #FFFFFF;
+      border-color: #2C3B4D;
+      box-shadow: 0 4px 12px rgba(44, 59, 77, 0.25);
+    }
+
+    .role-btn[aria-pressed="true"] svg {
+      stroke: var(--burning-flame);
+    }
+
+    .role-btn[aria-pressed="true"]::after {
+      content: '✓';
+      position: absolute;
+      right: 8px;
+      top: 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--burning-flame);
+    }
+
+    /* Test Credentials Box */
+    .demo-credentials-box {
+      background: #F7F4ED;
+      border: 1px solid var(--oatmeal);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 16px;
+      box-shadow: inset 0 1px 3px rgba(27, 38, 50, 0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .laser-scan-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--burning-flame) 50%, transparent 100%);
+      box-shadow: 0 0 10px var(--burning-flame);
+      opacity: 0.8;
+      animation: laserScan 2.8s infinite linear;
+      pointer-events: none;
+    }
+
+    @keyframes laserScan {
+      0% {
+        top: 0%;
+        opacity: 0;
+      }
+
+      15% {
+        opacity: 0.9;
+      }
+
+      85% {
+        opacity: 0.9;
+      }
+
+      100% {
+        top: 100%;
+        opacity: 0;
+      }
+    }
+
+    .demo-cred-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 7px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(201, 193, 177, 0.6);
+    }
+
+    .demo-cred-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--blue-fantastic);
+      text-transform: uppercase;
+    }
+
+    .demo-cred-autofill-btn {
+      background: var(--burning-flame);
+      border: 1px solid #EAA04C;
+      color: var(--abyssal-blue);
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 5px rgba(255, 177, 98, 0.3);
+    }
+
+    .demo-cred-autofill-btn:hover {
+      background: #FFA040;
+      transform: translateY(-1px);
+    }
+
+    .demo-cred-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .demo-cred-item {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .demo-cred-label {
+      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 500;
+    }
+
+    .demo-cred-val {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--abyssal-blue);
+      background: #FFFFFF;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--oatmeal);
+      display: inline-block;
+      width: fit-content;
+    }
+
+    /* Form Fields */
+    .field {
+      margin-bottom: 13px;
+    }
+
+    .field label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--blue-fantastic);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrap svg.icon {
+      position: absolute;
+      left: 12px;
+      width: 16px;
+      height: 16px;
+      stroke: var(--text-muted);
+      pointer-events: none;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      background: #FFFFFF;
+      border: 1.5px solid var(--oatmeal);
+      border-radius: 8px;
+      padding: 10px 12px 10px 38px;
+      color: var(--abyssal-blue);
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    input::placeholder {
+      color: #9AA4B0;
+    }
+
+    input:focus {
+      border-color: var(--blue-fantastic);
+      box-shadow: 0 0 0 3px rgba(44, 59, 77, 0.12);
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      padding: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+    }
+
+    .toggle-pw svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+    }
+
+    .toggle-pw:hover {
+      color: var(--abyssal-blue);
+    }
+
+    .row-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 4px 0 18px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .remember input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--blue-fantastic);
+    }
+
+    .forgot {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--truffle-trouble);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter';
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    /* Primary CTA Button in Burning Flame */
+    button.submit {
+      width: 100%;
+      background: var(--burning-flame);
+      color: var(--abyssal-blue);
+      border: 1.5px solid #EAA04C;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background .15s ease, transform .1s ease, box-shadow .15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(255, 177, 98, 0.35);
+    }
+
+    button.submit:hover {
+      background: #FFA040;
+      box-shadow: 0 6px 16px rgba(255, 177, 98, 0.45);
+      transform: translateY(-1px);
+    }
+
+    button.submit:active {
+      transform: scale(0.99);
+    }
+
+    button.submit[disabled] {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 2px solid rgba(27, 38, 50, 0.25);
+      border-top-color: var(--abyssal-blue);
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Error Message in Truffle Trouble */
+    .error-msg {
+      display: none;
+      font-size: 12px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: var(--truffle-trouble);
+      border-radius: 7px;
+      padding: 9px 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(163, 81, 57, 0.25);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0 14px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--oatmeal);
+    }
+
+    .otp-btn {
+      width: 100%;
+      background: #FFFFFF;
+      border: 1.5px solid var(--oatmeal);
+      color: var(--blue-fantastic);
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 12.5px;
+      font-family: 'Inter';
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all .15s ease;
+    }
+
+    .otp-btn:hover {
+      border-color: var(--blue-fantastic);
+      background: #F8F6F1;
+    }
+
+    .otp-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: var(--blue-fantastic);
+    }
+
+    .footnote {
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 18px;
+      line-height: 1.5;
+    }
+
+    .footnote b {
+      color: var(--abyssal-blue);
+      font-weight: 600;
+    }
+
+    /* Success state */
+    .success {
+      display: none;
+      text-align: center;
+      padding: 24px 8px 12px;
+    }
+
+    .success .ring {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      border: 2px solid #10B981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      animation: pulse 1.5s infinite;
+    }
+
+    .success .ring svg {
+      width: 28px;
+      height: 28px;
+      stroke: #10B981;
+    }
+
+    .success h2 {
+      font-family: 'Space Grotesk';
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--abyssal-blue);
+      margin-bottom: 6px;
+    }
+
+    .success p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Government Footer in Abyssal Anchorfish Blue */
+    .gov-footer {
+      width: 100%;
+      background: var(--abyssal-blue);
+      color: var(--palladian);
+      border-top: 2px solid var(--burning-flame);
+      padding: 16px 20px;
+      font-size: 11px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .gov-footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 8px;
+      color: #C9C1B1;
+      font-size: 11px;
+    }
+
+    .gov-footer-links a {
+      color: var(--palladian);
+      text-decoration: none;
+      transition: color .15s;
+    }
+
+    .gov-footer-links a:hover {
+      color: var(--burning-flame);
+    }
+
+    .compliance-badges {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #9AA4B0;
+    }
+
+    .compliance-badge-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .main-wrap {
+        padding: 16px 12px;
+      }
+
+      .portal-card {
+        padding: 20px 16px;
+      }
+
+      .roles-grid {
+        grid-template-columns: 1fr;
+        gap: 7px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Canvas for 3D Ambient Geometric Surveillance Web -->
+  <canvas id="meshCanvas"></canvas>
+
+  <!-- Government of India Official Top Bar -->
+  <div class="gov-strip">
+    <div class="gov-strip-left">
+      <div class="tricolor-tag" title="National Flag of India">
+        <span class="saffron"></span>
+        <span class="white"></span>
+        <span class="green"></span>
+      </div>
+      <span>भारत सरकार · Government of India</span>
+    </div>
+    <div class="gov-strip-right">
+      <span class="live-badge"><span class="pulse-dot"></span> LIVE GEOFENCE GRID</span>
+      <span>STQC &amp; CERT-In AUDITED</span>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-wrap">
+    <!-- Ministry Header -->
+    <header class="ministry-header">
+      <div class="emblem-wrapper" title="National Emblem of India">
+        <!-- Ashok Chakra / Emblem Symbol -->
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+          <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </div>
+      <div class="ministry-sub">Ministry of Social Justice &amp; Empowerment</div>
+      <h1 class="ministry-title">Nigrani 2.0 Monitoring Grid</h1>
+      <div class="ministry-badge">Zero-Trust Surprise Inspection &amp; Evidence Integrity Portal</div>
+    </header>
+
+    <!-- Active Session Banner (if already logged in) -->
+    <div class="session-alert" id="activeSessionAlert">
+      <div class="session-alert-content">
+        <div class="session-alert-text">
+          <strong id="sessionUserName">Authenticated Session</strong><br>
+          <span id="sessionUserRole" style="color:var(--text-muted);font-size:11px;">Active role detected</span>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button type="button" class="session-alert-btn" id="resumeSessionBtn">Enter Dashboard →</button>
+          <button type="button" class="session-alert-btn" id="clearSessionBtn"
+            style="background:#FFFFFF;color:var(--blue-fantastic);border:1px solid var(--oatmeal);">Sign Out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portal Card -->
+    <div class="portal-card">
+      <div id="formView">
+        <div class="card-heading">
+          <h2>Official Sign In</h2>
+          <p>Select your authorized role to access cryptographic field controls and reports.</p>
+        </div>
+
+        <div class="role-section-label">
+          <span>1. Select Designated Role</span>
+          <span style="font-size:10px;color:var(--text-muted);text-transform:none;">4 Distinct Portals</span>
+        </div>
+
+        <!-- 4 Role Selector Buttons -->
+        <div class="roles-grid" id="roleGroup" role="group" aria-label="Select role">
+          <button type="button" class="role-btn" data-role="official" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M12 2 3 6v6c0 5 3.8 8.7 9 10 5.2-1.3 9-5 9-10V6l-9-4Z" />
+            </svg>
+            <span class="role-btn-text">Department Official</span>
+          </button>
+          <button type="button" class="role-btn" data-role="pmu" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <path d="M9 11l3 3 8-8" />
+              <path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9" />
+            </svg>
+            <span class="role-btn-text">PMU Inspector</span>
+          </button>
+          <button type="button" class="role-btn" data-role="ngo" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <rect x="3" y="7" width="18" height="13" rx="1.5" />
+              <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+            </svg>
+            <span class="role-btn-text">NGO / Institute</span>
+          </button>
+          <button type="button" class="role-btn" data-role="beneficiary" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+              <circle cx="12" cy="8" r="3.5" />
+              <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" />
+            </svg>
+            <span class="role-btn-text">Beneficiary (Citizen)</span>
+          </button>
+        </div>
+
+        <!-- 1-Click Test Credentials Helper Box -->
+        <div class="demo-credentials-box">
+          <div class="laser-scan-line"></div>
+          <div class="demo-cred-top">
+            <span class="demo-cred-badge">
+              <span class="pulse-dot"></span>
+              <span id="demoCredRoleTag">TEST CREDENTIALS · DEPARTMENT OFFICIAL</span>
+            </span>
+            <button type="button" class="demo-cred-autofill-btn" id="autofillBtn"
+              title="Click to fill test credentials">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                style="width:12px;height:12px;">
+                <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z" />
+              </svg>
+              1-Click Fill
+            </button>
+          </div>
+          <div class="demo-cred-details">
+            <div class="demo-cred-item">
+              <span class="demo-cred-label">Login Identifier:</span>
+              <code class="demo-cred-val" id="demoCredId">DOSJE-OFF-01</code>
+            </div>
+            <div class="demo-cred-item">
+              <span class="demo-cred-label">Password:</span>
+              <code class="demo-cred-val" id="demoCredPw">Admin@2026</code>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-msg" id="errorMsg">Enter both your ID/mobile number and password to continue.</div>
+
+        <!-- Sign-in Form -->
+        <form id="loginForm" novalidate>
+          <div class="field">
+            <label for="userId" id="userIdLabel">Employee ID / Gov Email</label>
+            <div class="input-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7" />
+              </svg>
+              <input type="text" id="userId" placeholder="e.g. DOSJE-OFF-01" value="DOSJE-OFF-01"
+                autocomplete="username">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="4" y="10" width="16" height="10" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              <input type="password" id="password" placeholder="Enter password" value="Admin@2026"
+                autocomplete="current-password" style="padding-right:40px;">
+              <button type="button" class="toggle-pw" id="togglePw" aria-label="Show password">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="row-between">
+            <label class="remember"><input type="checkbox" id="remember" checked> Keep me signed in</label>
+            <button type="button" class="forgot" id="forgotBtn">Forgot password?</button>
+          </div>
+
+          <button type="submit" class="submit" id="submitBtn">
+            <span class="spinner" id="spinner"></span>
+            <span id="submitLabel">Authorize &amp; Enter Dashboard →</span>
+          </button>
+        </form>
+
+        <div class="divider">OR USE NATIONAL SINGLE SIGN-ON</div>
+
+        <button type="button" class="otp-btn" id="otpBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" />
+            <path d="M11 18h2" />
+          </svg>
+          Sign in via MeriPehchaan / Aadhaar OTP
+        </button>
+
+        <p class="footnote">
+          All sign-in events are cryptographically hashed and geo-logged under IT Act 2000.<br>
+          Authorized for <b>DoSJE Schemes: NAPDDR · SMILE · AVYAY · DDRS</b>.
+        </p>
+      </div>
+
+      <!-- Success Screen -->
+      <div class="success" id="successView">
+        <div class="ring">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <h2>Identity Authenticated</h2>
+        <p id="successSub">Taking you to your designated dashboard…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Government Official Footer -->
+  <footer class="gov-footer">
+    <div class="gov-footer-links">
+      <a href="https://socialjustice.gov.in" target="_blank" rel="noopener">DoSJE Official Portal</a>
+      <span>•</span>
+      <a href="javascript:void(0)"
+        onclick="alert('TLS 1.3 encryption with SHA-256 certificate thumbprint active.')">Security Policy</a>
+      <span>•</span>
+      <a href="javascript:void(0)" onclick="alert('Digital India GovTech Framework v2.6 compliance.')">Compliance
+        Guidelines</a>
+      <span>•</span>
+      <a href="javascript:void(0)" onclick="alert('Toll-free Helpdesk: 1800-11-2001 (09:00 - 18:00 IST)')">National
+        Helpdesk</a>
+    </div>
+    <div class="compliance-badges">
+      <span class="compliance-badge-item">🔒 End-to-End Encrypted Session</span>
+      <span>•</span>
+      <span class="compliance-badge-item">🏛️ National Informatics Centre Architecture</span>
+      <span>•</span>
+      <span class="compliance-badge-item">🛡️ STQC Zero-Trust Framework</span>
+    </div>
+    <p style="margin-top:8px;opacity:0.65;font-size:10px;">
+      Content Owned and Maintained by Department of Social Justice &amp; Empowerment, Government of India.
+    </p>
+  </footer>
+
+  <script>
+    // 3D Ambient Canvas Animation (Geometric Security Mesh in Palladian / Blue Fantastic)
+    (function init3DAmbientMesh() {
+      const canvas = document.getElementById('meshCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      let mouse = { x: width / 2, y: height / 2, active: false };
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+      window.addEventListener('mouseleave', () => { mouse.active = false; });
+
+      const nodes = [];
+      const nodeCount = Math.min(48, Math.floor(width / 28));
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          radius: 1.8 + Math.random() * 2.2,
+          pulse: Math.random() * Math.PI,
+          isSpecial: Math.random() > 0.72
+        });
+      }
+
+      let scanAngle = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Radar sweep
+        scanAngle += 0.007;
+        const cx = width * 0.5;
+        const cy = height * 0.45;
+        const maxR = Math.max(width, height) * 0.45;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(scanAngle);
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(maxR, 0);
+        ctx.strokeStyle = "rgba(255, 177, 98, 0.09)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+
+        // Connecting geodesic mesh
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 150) {
+              const alpha = (1 - dist / 150) * 0.22;
+              ctx.strokeStyle = nodes[i].isSpecial || nodes[j].isSpecial
+                ? `rgba(255, 177, 98, ${alpha * 1.3})`
+                : `rgba(44, 59, 77, ${alpha})`;
+              ctx.lineWidth = nodes[i].isSpecial || nodes[j].isSpecial ? 1.2 : 0.8;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Draw nodes with subtle pulse
+        for (const n of nodes) {
+          n.pulse += 0.03;
+          const r = n.radius + Math.sin(n.pulse) * 0.5;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, Math.max(1, r), 0, Math.PI * 2);
+          if (n.isSpecial) {
+            ctx.fillStyle = 'rgba(255, 177, 98, 0.75)';
+            ctx.shadowColor = '#FFB162';
+            ctx.shadowBlur = 6;
+          } else {
+            ctx.fillStyle = 'rgba(44, 59, 77, 0.35)';
+            ctx.shadowBlur = 0;
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // Mouse gravity
+          if (mouse.active) {
+            const mdx = mouse.x - n.x;
+            const mdy = mouse.y - n.y;
+            const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+            if (mdist < 130) {
+              n.x += (mdx / mdist) * 0.35;
+              n.y += (mdy / mdist) * 0.35;
+            }
+          }
+
+          n.x += n.vx;
+          n.y += n.vy;
+          if (n.x < 0 || n.x > width) n.vx *= -1;
+          if (n.y < 0 || n.y > height) n.vy *= -1;
+        }
+
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // Role credential mappings
+    const roleConfigs = {
+      official: {
+        label: 'Department Official',
+        idLabel: 'Employee ID / Gov Email',
+        ph: 'e.g. DOSJE-OFF-01',
+        credId: 'DOSJE-OFF-01',
+        credPw: 'Admin@2026',
+        tag: 'TEST CREDENTIALS · DEPARTMENT OFFICIAL'
+      },
+      pmu: {
+        label: 'PMU Inspector',
+        idLabel: 'Inspector ID / Official Email',
+        ph: 'e.g. PMU-INSP-101',
+        credId: 'PMU-INSP-101',
+        credPw: 'Inspect@2026',
+        tag: 'TEST CREDENTIALS · PMU INSPECTOR'
+      },
+      ngo: {
+        label: 'NGO / Institute',
+        idLabel: 'Institute ID / Org Email',
+        ph: 'e.g. NGO-INST-501',
+        credId: 'NGO-INST-501',
+        credPw: 'Partner@2026',
+        tag: 'TEST CREDENTIALS · NGO / INSTITUTE'
+      },
+      beneficiary: {
+        label: 'Beneficiary',
+        idLabel: 'Beneficiary ID / Mobile Number',
+        ph: 'e.g. BEN-2026-999',
+        credId: 'BEN-2026-999',
+        credPw: 'Benefit@2026',
+        tag: 'TEST CREDENTIALS · CITIZEN BENEFICIARY'
+      }
+    };
+
+    const roleButtons = document.querySelectorAll('.role-btn');
+    const userIdLabel = document.getElementById('userIdLabel');
+    const userId = document.getElementById('userId');
+    const password = document.getElementById('password');
+    const demoCredRoleTag = document.getElementById('demoCredRoleTag');
+    const demoCredId = document.getElementById('demoCredId');
+    const demoCredPw = document.getElementById('demoCredPw');
+    const autofillBtn = document.getElementById('autofillBtn');
+
+    function updateActiveRoleUI(roleKey) {
+      const r = roleConfigs[roleKey];
+      if (!r) return;
+      userIdLabel.textContent = r.idLabel;
+      userId.placeholder = r.ph;
+      demoCredRoleTag.textContent = r.tag;
+      demoCredId.textContent = r.credId;
+      demoCredPw.textContent = r.credPw;
+      userId.value = r.credId;
+      password.value = r.credPw;
+      errorMsg.style.display = 'none';
+    }
+
+    function doAutofill() {
+      const activeRoleBtn = document.querySelector('.role-btn[aria-pressed="true"]');
+      const roleKey = activeRoleBtn ? activeRoleBtn.dataset.role : 'official';
+      const r = roleConfigs[roleKey];
+      if (r) {
+        userId.value = r.credId;
+        password.value = r.credPw;
+        errorMsg.style.display = 'none';
+      }
+    }
+
+    autofillBtn.addEventListener('click', doAutofill);
+
+    roleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        roleButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+        btn.setAttribute('aria-pressed', 'true');
+        updateActiveRoleUI(btn.dataset.role);
+      });
+    });
+
+    const togglePw = document.getElementById('togglePw');
+    togglePw.addEventListener('click', () => {
+      const show = password.type === 'password';
+      password.type = show ? 'text' : 'password';
+      togglePw.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    });
+
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const submitBtn = document.getElementById('submitBtn');
+    const spinner = document.getElementById('spinner');
+    const submitLabel = document.getElementById('submitLabel');
+    const formView = document.getElementById('formView');
+    const successView = document.getElementById('successView');
+    const successSub = document.getElementById('successSub');
+
+    // Check if session already exists, and show prompt rather than locking the user out
+    (async function checkExistingSession() {
+      const isFile = window.location.protocol === 'file:';
+      const apiBase = isFile ? 'http://localhost:3000' : '';
+      try {
+        const fetchOpts = isFile ? {} : { credentials: 'include' };
+        const res = await fetch(`${apiBase}/api/trpc/auth.me`, fetchOpts);
+        const data = await res.json();
+        const activeUser = data?.result?.data?.json;
+        if (activeUser && activeUser.name) {
+          const alertBox = document.getElementById('activeSessionAlert');
+          const nameSpan = document.getElementById('sessionUserName');
+          const roleSpan = document.getElementById('sessionUserRole');
+          const resumeBtn = document.getElementById('resumeSessionBtn');
+          if (alertBox) {
+            nameSpan.textContent = `Active Session: ${activeUser.name}`;
+            roleSpan.textContent = `Logged in as ${activeUser.role || 'User'}. Click to resume or switch role below.`;
+            alertBox.style.display = 'block';
+            resumeBtn.onclick = () => {
+              window.location.href = isFile ? 'http://localhost:3000/' : '/';
+            };
+            const clearBtn = document.getElementById('clearSessionBtn');
+            if (clearBtn) {
+              clearBtn.onclick = async () => {
+                try {
+                  await fetch(`${apiBase}/api/auth/logout`, { method: 'POST', ...(isFile ? {} : { credentials: 'include' }) });
+                } catch { }
+                document.cookie = 'app_session_id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0';
+                sessionStorage.clear();
+                localStorage.clear();
+                window.location.reload();
+              };
+            }
+          }
+        }
+      } catch (e) { }
+    })();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!userId.value.trim() || !password.value.trim()) {
+        errorMsg.textContent = 'Enter both your ID/mobile number and password to continue.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      errorMsg.style.display = 'none';
+      submitBtn.disabled = true;
+      spinner.style.display = 'inline-block';
+      submitLabel.textContent = 'Verifying with DoSJE Directory…';
+
+      const activeRoleBtn = document.querySelector('.role-btn[aria-pressed="true"]');
+      const roleKey = activeRoleBtn ? activeRoleBtn.dataset.role : 'official';
+      const activeRoleName = activeRoleBtn ? activeRoleBtn.querySelector('.role-btn-text').textContent : 'Department Official';
+      const rememberMe = document.getElementById('remember') ? document.getElementById('remember').checked : false;
+
+      const isFile = window.location.protocol === 'file:';
+      const apiBase = isFile ? 'http://localhost:3000' : '';
+
+      try {
+        const fetchOpts = {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            role: roleKey,
+            identifier: userId.value.trim(),
+            password: password.value.trim(),
+            rememberMe
+          })
+        };
+        if (!isFile) {
+          fetchOpts.credentials = 'include';
+        }
+
+        const response = await fetch(`${apiBase}/api/auth/login`, fetchOpts);
+
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || 'Authentication failed. Please check credentials.');
+        }
+
+        // Store session token in sessionStorage, localStorage, and document.cookie
+        if (result.token) {
+          try {
+            sessionStorage.setItem('manus-cookie', 'app_session_id=' + result.token);
+            localStorage.setItem('dosje-selected-role', roleKey);
+            localStorage.setItem('dosje-user-data', JSON.stringify(result.user));
+            document.cookie = 'app_session_id=' + result.token + '; path=/; max-age=31536000; SameSite=Lax';
+          } catch (storageErr) { }
+        }
+
+        formView.style.display = 'none';
+        successView.style.display = 'block';
+        successSub.textContent = 'Signed in as ' + activeRoleName + '. Launching your role dashboard…';
+
+        setTimeout(() => {
+          const targetOrigin = isFile ? 'http://localhost:3000' : '';
+          const tokenQuery = result.token ? `?auth_token=${encodeURIComponent(result.token)}&role=${encodeURIComponent(roleKey)}` : '';
+          window.location.href = `${targetOrigin}/${tokenQuery}`;
+        }, 600);
+      } catch (err) {
+        submitBtn.disabled = false;
+        spinner.style.display = 'none';
+        submitLabel.textContent = 'Authorize & Enter Dashboard →';
+        errorMsg.textContent = err.message || 'Unable to connect to server. Ensure MVP server is running.';
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    document.getElementById('forgotBtn').addEventListener('click', () => {
+      alert('Password reset link has been dispatched to your registered official email/SMS gateway.');
+    });
+    document.getElementById('otpBtn').addEventListener('click', () => {
+      alert('Aadhaar / MeriPehchaan OTP gateway requested. Enter the 6-digit OTP sent to your registered mobile number.');
+    });
+  </script>
+</body>
+
+</html>

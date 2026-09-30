@@ -1,0 +1,2 @@
+ALTER TABLE `users` MODIFY COLUMN `role` enum('user','admin','DEPARTMENT_ADMIN','PMU_INSPECTOR','INSTITUTE_ADMIN','AUDITOR') NOT NULL DEFAULT 'PMU_INSPECTOR';--> statement-breakpoint
+ALTER TABLE `users` ADD `organizationId` varchar(64);

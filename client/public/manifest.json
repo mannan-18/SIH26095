@@ -1,0 +1,22 @@
+{
+  "short_name": "Nigrani 2.0",
+  "name": "Securesight (DoSJE Nigrani 2.0 Grid)",
+  "description": "Smart Real-Time Monitoring & Inspection Mobile App (MoSJE / DoSJE)",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#161610",
+  "theme_color": "#152D3F",
+  "display": "standalone",
+  "orientation": "portrait"
+}
