@@ -5,8 +5,8 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
-import { startLogin } from "./const";
-import "./index.css";
+import { startLogin } from "@/lib/const";
+import "@/styles/index.css";
 
 // Ingest auth token from URL if redirected from login page (supports both file:// and http:// origins)
 try {

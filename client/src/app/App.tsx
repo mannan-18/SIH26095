@@ -1,12 +1,12 @@
 import { Route, Switch, Redirect } from "wouter";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import { useAuth } from "./_core/hooks/useAuth";
-import Login from "./pages/Login";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { useAuth } from "@/hooks/useAuth";
+import Login from "@/pages/Login";
+import Home from "@/pages/Home";
+import NotFound from "@/pages/NotFound";
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, loading } = useAuth();

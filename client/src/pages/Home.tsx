@@ -8,12 +8,12 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { DEMO_ROLES } from "@shared/const";
 import InspectorDashboardView from "@/components/dashboards/InspectorDashboardView";
-import CameraCapture from "@/components/CameraCapture";
-import VideoConferenceModal from "@/components/VideoConferenceModal";
-import CctvPlayer from "@/components/CctvPlayer";
+import CameraCapture from "@/components/capture/CameraCapture";
+import VideoConferenceModal from "@/components/vc/VideoConferenceModal";
+import CctvPlayer from "@/components/cctv/CctvPlayer";
 import InstituteDashboardView from "@/components/dashboards/InstituteDashboardView";
 import BeneficiaryDashboardView from "@/components/dashboards/BeneficiaryDashboardView";
 import StateAuthorityDashboardView from "@/components/dashboards/StateAuthorityDashboardView";

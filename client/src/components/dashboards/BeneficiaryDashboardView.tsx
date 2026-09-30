@@ -5,7 +5,7 @@ import {
   Download, Send, AlertTriangle, FileText, Check, HeartHandshake, ScanLine
 } from "lucide-react";
 import { toast } from "sonner";
-import BiometricCheckinModal from "@/components/BiometricCheckinModal";
+import BiometricCheckinModal from "@/components/capture/BiometricCheckinModal";
 
 interface BeneficiaryDashboardViewProps {
   user: any;

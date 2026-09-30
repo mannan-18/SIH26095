@@ -1,5 +1,5 @@
 import { COOKIE_NAME } from "@shared/const";
-import { startLogin } from "@/const";
+import { startLogin } from "@/lib/const";
 import { trpc } from "@/lib/trpc";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";

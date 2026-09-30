@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
-import CctvPlayer from "../CctvPlayer";
+import CctvPlayer from "@/components/cctv/CctvPlayer";
 
 interface StateAuthorityDashboardProps {
   user: any;

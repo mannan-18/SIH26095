@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   ShieldCheck, CheckCircle2, Lock, Eye, EyeOff, 
   ArrowRight, RefreshCw, AlertTriangle, User,
