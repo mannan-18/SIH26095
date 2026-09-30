@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { canAccessStorageKey, normalizeStorageKey, scopedStorageKey } from "./storageAccess";
-import { storageGet } from "./storage";
+import { canAccessStorageKey, normalizeStorageKey, scopedStorageKey } from "../storageAccess";
+import { storageGet } from "../storage";
 
 describe("storage access policy", () => {
   it("normalizes safe keys and rejects traversal", () => {

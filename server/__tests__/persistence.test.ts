@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { claimAssignment } from "./db";
-import { getAudit, hydrateDemoState } from "./demoStore";
+import { claimAssignment } from "../db";
+import { getAudit, hydrateDemoState } from "../demoStore";
 
 describe("managed MySQL persistence boundaries", () => {
   it("hydrates domain records from the database and keeps the audit chain valid", async () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { resolveOAuthRedirectUri } from "../shared/oauth";
+import { resolveOAuthRedirectUri } from "@shared/oauth";
 
 describe("OAuth redirect configuration", () => {
   it("uses the explicitly configured HTTPS callback URI", () => {

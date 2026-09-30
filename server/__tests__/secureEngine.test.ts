@@ -14,9 +14,9 @@ import {
   validateAssignmentConstraints,
   calculateInstituteRiskScore,
   analyzeAttendanceAdvanced,
-} from "./secureEngine";
-import { submitLiveCapture, requestEvidenceNonce, getRegionalOverview } from "./demoStore";
-import { getUserStateScope } from "./routers";
+} from "../secureEngine";
+import { submitLiveCapture, requestEvidenceNonce, getRegionalOverview } from "../demoStore";
+import { getUserStateScope } from "../routers";
 
 describe("SecureSight Core Security & Credibility Unit Tests (Phase 8)", () => {
   it("computes accurate Haversine distance", () => {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { TRPCError } from "@trpc/server";
-import { appRouter } from "./routers";
-import { LocalDemoEvidenceStorage, MockCCTVProvider, MockVideoConferenceProvider } from "./providers";
-import type { TrpcContext } from "./_core/context";
+import { appRouter } from "../routers";
+import { LocalDemoEvidenceStorage, MockCCTVProvider, MockVideoConferenceProvider } from "../providers";
+import type { TrpcContext } from "../_core/context";
 
 function context(role: "admin" | "user" = "admin", email = "admin@securesight.gov.in", organizationId: string | null = null): TrpcContext {
   const user = { id: 1, openId: `test-${role}-${email}`, name: "Test User", email, loginMethod: "test", role, organizationId, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() } as const;

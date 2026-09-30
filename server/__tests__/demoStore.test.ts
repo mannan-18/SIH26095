@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { alerts, assignments, auditLog, evidence, generateAssignment, getAudit, getChecklistForInspection, inspections, reveal, seal, startSurpriseInspection, updateAlertStatus, verifyEvidenceDemo } from "./demoStore";
+import { alerts, assignments, auditLog, evidence, generateAssignment, getAudit, getChecklistForInspection, inspections, reveal, seal, startSurpriseInspection, updateAlertStatus, verifyEvidenceDemo } from "../demoStore";
 
 describe("SecureSight demo workflow", () => {
   it("runs server-controlled surprise inspection assignment lifecycle", () => {
