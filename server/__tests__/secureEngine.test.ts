@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { 
   analyzeAttendance, 
   appendAudit, 
@@ -169,5 +169,34 @@ describe("SecureSight Core Security & Credibility Unit Tests (Phase 8)", () => {
     const mockProdEnv = { NODE_ENV: "production", DEMO_MODE: "false" };
     expect(checkRepairAllowed(mockProdEnv)).toBe(false);
     await expect(executeAuditRepair(mockProdEnv)).rejects.toThrow(/REFUSED/);
+  });
+
+  it("detects impossible movement speed anomaly (>150 km/h)", () => {
+    vi.useFakeTimers();
+    const institute = { latitude: 28.6139, longitude: 77.209 };
+    const sessionId = "speed-test-session-001";
+
+    evaluateServerGeofence(institute, { latitude: 28.6139, longitude: 77.209, accuracy: 10 }, sessionId);
+    vi.advanceTimersByTime(5000); // 5 seconds later
+    const speedFix = evaluateServerGeofence(institute, { latitude: 19.076, longitude: 72.8777, accuracy: 10 }, sessionId);
+
+    expect(speedFix.status).toBe("SPOOF_DETECTED");
+    expect(speedFix.isSpoofed).toBe(true);
+    expect(speedFix.spoofReason).toContain("Impossible movement speed");
+    vi.useRealTimers();
+  });
+
+  it("rejects expired evidence nonces (>120s)", () => {
+    const nonceRecord = requestEvidenceNonce("INSP-0001");
+    nonceRecord.expiresAt = Date.now() - 5000; // Force expiration
+
+    expect(() =>
+      submitLiveCapture("INSP-0001", nonceRecord.nonce, "fake-image-base64-bytes", {
+        latitude: 18.5204,
+        longitude: 73.8567,
+        accuracy: 10,
+        deviceTimestamp: Date.now(),
+      })
+    ).toThrow(/Nonce expired/);
   });
 });

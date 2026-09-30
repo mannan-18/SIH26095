@@ -43,4 +43,11 @@ describe("server-enforced RBAC and provider failure behavior", () => {
     expect((await vc.createSession({ participantId: "" })).status).toBe("FAILED");
     expect((await vc.createSession({ participantId: "beneficiary-001" })).provider).toBe("DEMO");
   });
+
+  it("returns FORBIDDEN when State Authority attempts to fetch out-of-scope regional data", async () => {
+    const caller = appRouter.createCaller(context("user", "dosje-state-delhi@dosje.gov.in"));
+    await expect(caller.stateAuthority.getRegionalData({ requestedState: "Maharashtra" })).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
+  });
 });
