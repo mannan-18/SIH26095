@@ -72,13 +72,21 @@ async function startServer() {
   const authLoginLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 10,
+    skipSuccessfulRequests: true,
     standardHeaders: true,
     legacyHeaders: false,
-    message: { error: "Too many login attempts. Please wait 15 minutes before trying again." },
+    handler: (_req, res) => {
+      res.status(429).json({
+        error: {
+          json: {
+            message: "Too many login attempts. Please wait 15 minutes before trying again.",
+            code: -32005,
+            data: { code: "TOO_MANY_REQUESTS", httpStatus: 429 },
+          },
+        },
+      });
+    },
   });
-
-  app.use("/api/auth/login", authLoginLimiter);
-  app.use("/api/dosje-login", authLoginLimiter);
   // Enable CORS for local file:// and browser origins
   app.use((req, res, next) => {
     const origin = req.headers.origin;
@@ -302,6 +310,13 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   // tRPC API
+  app.use("/api/trpc", (req, res, next) => {
+    if (req.path.includes("auth.login") || req.url.includes("auth.login")) {
+      return authLoginLimiter(req, res, next);
+    }
+    next();
+  });
+
   app.use(
     "/api/trpc",
     createExpressMiddleware({
