@@ -107,6 +107,39 @@ describe("auth.logout", () => {
 
     const ben = await caller.auth.login({ role: "beneficiary", identifier: "9876543210", password: "secret" });
     expect(ben.user.role).toBe("user");
+
+    const state = await caller.auth.login({ role: "state", identifier: "STATE-MH-001", password: "secret" });
+    expect(state.user.role).toBe("STATE_AUTHORITY");
+  });
+
+  it("K8: returns uniform error message without revealing user ID or password existence", async () => {
+    const ctx: TrpcContext = {
+      user: null,
+      req: { protocol: "http", headers: {} } as TrpcContext["req"],
+      res: { clearCookie: () => undefined } as TrpcContext["res"],
+    };
+    const caller = appRouter.createCaller(ctx);
+
+    // Case 1: Unknown ID
+    const unknownIdErr = await caller.auth.login({
+      role: "official",
+      identifier: "UNKNOWN-ID-9999",
+      password: "somepassword",
+    }).catch(e => e);
+
+    // Case 2: Known ID, wrong password
+    const wrongPassErr = await caller.auth.login({
+      role: "official",
+      identifier: "DOSJE-OFF-01",
+      password: "wrongpassword999",
+    }).catch(e => e);
+
+    expect(unknownIdErr.message).toBe("Invalid credentials for the selected role.");
+    expect(wrongPassErr.message).toBe("Invalid credentials for the selected role.");
+    expect(unknownIdErr.message).toBe(wrongPassErr.message);
+    expect(unknownIdErr.message).not.toContain("UNKNOWN-ID");
+    expect(unknownIdErr.message).not.toContain("DOSJE-OFF-01");
+    expect(unknownIdErr.message).not.toContain("password");
   });
 });
 

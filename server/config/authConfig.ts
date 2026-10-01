@@ -98,18 +98,14 @@ export function verifyServerRoleCredentials(role: string, identifier: string, pa
   const cleanPass = password.trim();
 
   const idMatches = roleConfig.allowedIds.some(id => id.toLowerCase() === cleanId) || cleanId === roleConfig.primaryId.toLowerCase();
-  if (!idMatches) {
-    return {
-      valid: false,
-      error: `Invalid identifier for ${roleConfig.title}. Please enter test ID '${roleConfig.primaryId}'.`,
-    };
-  }
+  const dummyPassCheck = cleanPass === "dummy_constant_time_password_check_string";
+  const passMatches = idMatches && (roleConfig.allowedPasswords.some(p => p === cleanPass) || cleanPass === roleConfig.password);
 
-  const passMatches = roleConfig.allowedPasswords.some(p => p === cleanPass) || cleanPass === roleConfig.password;
-  if (!passMatches) {
+  if (!idMatches || !passMatches || dummyPassCheck) {
+    console.warn(`[Auth] Failed authentication attempt for role: ${roleKey} (Reason: ${idMatches ? "Invalid Password" : "Unknown ID"})`);
     return {
       valid: false,
-      error: `Incorrect password for ${roleConfig.title}.`,
+      error: "Invalid credentials for the selected role.",
     };
   }
 
