@@ -1,0 +1,8 @@
+<!-- TODO: Replace with official Government of India emblem asset -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="48" height="48">
+  <circle cx="50" cy="50" r="46" fill="#FAF8F5" stroke="#B58863" stroke-width="2"/>
+  <circle cx="50" cy="50" r="34" fill="none" stroke="#152D3F" stroke-width="1.5" stroke-dasharray="4 2"/>
+  <path d="M50 20 L50 80 M20 50 L80 50 M29 29 L71 71 M29 71 L71 29" stroke="#B58863" stroke-width="2"/>
+  <circle cx="50" cy="50" r="8" fill="#152D3F"/>
+  <path d="M32 82 L68 82 M38 87 L62 87" stroke="#152D3F" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
